@@ -1,4 +1,4 @@
-var filename = 'sealdice-js-ext.js'
+var filename = 'sealdice-inventory.js'
 
 module.exports = {
   dev: {
@@ -49,7 +49,7 @@ module.exports = {
     color: true,
     sourcemap: false,
     external: ['csharp', 'puerts'],
-    target: 'es6',
+    target: 'es2019',
     treeShaking: true,
     logLevel: 'error',
     define: {'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')},
