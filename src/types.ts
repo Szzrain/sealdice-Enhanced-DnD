@@ -56,7 +56,7 @@ export class Item {
     if (item.count <= 0) {
       return "使用失败：你没有" + this.name;
     }
-    if (item.use <= 0) {
+    if (item.use <= 0 && this.useMax > 0) {
       return "使用失败：你的" + this.name + "充能已经用完";
     }
     if (this.use > 0) {

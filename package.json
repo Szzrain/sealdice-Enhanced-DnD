@@ -1,11 +1,11 @@
 {
-  "name": "a-long-story",
+  "name": "sealdice-dnd-plus",
   "version": "1.0.0",
-  "description": "once upon a time, ...",
+  "description": "a sealdice extension for d&d 5e",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
-  "repository": "https://github.com/sealdice/seal-swordworld",
-  "license": "Apache-2.0",
+  "repository": "https://github.com/Szzrain/sealdice-dnd-plus",
+  "license": "AGPL-3.0",
   "keywords": [],
   "scripts": {
     "build": "cross-env NODE_ENV=production node tools/build.js",

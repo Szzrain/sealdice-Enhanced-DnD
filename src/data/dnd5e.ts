@@ -1,14 +1,21 @@
 export const DND_ADVENTURE_GEAR = {
+  //物品名称
   "算盘": {
+    //别名
     "alias": ["算盘Abacus","Abacus"],
+    //价格
     "price": {
       "gp": 2,
       "sp": 0,
       "cp": 0
     },
+    //使用次数，-1表示无限次
     "use": -1,
+    //重量
     "weight": 2,
+    //是否可以购买
     "canBuy": true,
+    //描述，照抄速查表
     "description": "PHB装备:算盘/\n" +
       "算盘 Abacus\n" +
       "价格：2gp\n" +
@@ -109,5 +116,20 @@ export const DND_ADVENTURE_GEAR = {
       "弹药\n" +
       "价格：4gp\n" +
       "重量：1.5磅"
+  },
+  "抗毒剂": {
+    "alias": ["抗毒剂Antitoxin","Antitoxin"],
+    "price": {
+      "gp": 50,
+      "sp": 0,
+      "cp": 0
+    },
+    "use": 1,
+    "weight": 0,
+    "canBuy": true,
+    "description": "PHB装备:抗毒剂/\n" +
+      "抗毒剂 Antitoxin（小瓶 Vial）\n" +
+      "价格：50gp\n" +
+      "喝下瓶内液体的生物在1小时内进行对抗对毒素的豁免检定时具有优势。它无法为不死生物或构装生物提供任何增益。"
   },
 }

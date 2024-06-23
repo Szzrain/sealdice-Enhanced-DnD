@@ -1,4 +1,4 @@
-var filename = 'sealdice-inventory.js'
+var filename = 'sealdice-dnd-plus.js'
 
 module.exports = {
   dev: {
@@ -40,7 +40,7 @@ module.exports = {
     // Uses incremental compilation (see `chokidar.on`).
     // incremental: true,
     // Removes whitespace, etc. depending on `NODE_ENV=...`.
-    minify: true,
+    minify: false,
     // Bundles JavaScript to (see `entryPoints`).
     outfile: "dist/" + filename,
     // Others

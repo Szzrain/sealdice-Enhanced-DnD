@@ -3,12 +3,12 @@ import {InventoryInfo, Player} from "./types";
 
 function main() {
   // 注册扩展
-  let ext = seal.ext.find('inventory');
+  let ext = seal.ext.find('enhanced-dnd');
   if (!ext) {
-    ext = seal.ext.new('inventory', 'Szzrain', '1.0.0');
+    ext = seal.ext.new('enhanced-dnd', 'Szzrain', '1.0.0');
     seal.ext.register(ext);
   } else {
-    throw new Error('inventory 扩展已存在');
+    throw new Error('enhanced-dnd 加载失败：同名扩展已存在');
   }
 
   function playerLoad() {
@@ -98,7 +98,7 @@ function main() {
         playerItem.count += num;
         player.items.set(itemName, playerItem);
         save();
-        seal.replyToSender(rctx, msg, `已添加${num}个${itemName}`);
+        seal.replyToSender(rctx, msg, `已添加${num}个${itemName}到${seal.format(mctx, "{$t玩家}")}的物品栏`);
         return seal.ext.newCmdExecuteResult(true);
       }
       case 'buy': {
@@ -119,7 +119,7 @@ function main() {
         let playerSp = seal.vars.intGet(rctx, "sp");
         let playerCp = seal.vars.intGet(rctx, "cp");
         if (!playerGp[1] || !playerSp[1] || !playerCp[1]) {
-          seal.replyToSender(rctx, msg, `购买物品失败：gp,sp,或cp未录入`);
+          seal.replyToSender(rctx, msg, `购买物品失败：gp,sp,或cp未录入，请先使用 .st 指令录入`);
           return seal.ext.newCmdExecuteResult(true);
         }
         if (!playerReduceMoney(mctx, price.gp*num, price.sp*num, price.cp*num)) {
@@ -134,7 +134,7 @@ function main() {
         playerItem.count += num;
         player.items.set(itemName, playerItem);
         save();
-        seal.replyToSender(rctx, msg, `已购买${itemName}`);
+        seal.replyToSender(rctx, msg, `${seal.format(mctx, "{$t玩家}")} 已购买 ${itemName} * ${num}`);
         return seal.ext.newCmdExecuteResult(true);
       }
       case 'use': {
@@ -154,6 +154,12 @@ function main() {
         seal.replyToSender(rctx, msg, result);
         return seal.ext.newCmdExecuteResult(true);
       }
+      case 'fmt': {
+        player.name = seal.format(mctx, `{$t玩家}`);
+        save();
+        seal.replyToSender(rctx, msg, `已将物品栏绑定至角色${player.name}`);
+        return seal.ext.newCmdExecuteResult(true);
+      }
       case 'des': {
         const itemName = cmdArgs.getArgN(2);
         let itemInfo = itemMap.get(itemName);
@@ -165,11 +171,15 @@ function main() {
         return seal.ext.newCmdExecuteResult(true);
       }
       default: {
-        text += `物品栏：\n`;
+        text += `${seal.format(mctx, "{$t玩家}")}的物品栏：\n`;
         let isEmpty = true;
         player.items.forEach((value, key) => {
           if (value.count > 0) {
-            text += `${key}: ${value.count} 剩余使用次数: ${value.use}\n`;
+            text += `${key}: ${value.count} `;
+            if (value.use > 0) {
+              text += `剩余使用次数: ${value.use}`
+            }
+            text += '\n';
             isEmpty = false;
           }
         })
