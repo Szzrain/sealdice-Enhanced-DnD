@@ -40,13 +40,13 @@ export function playerReduceMoney(ctx: seal.MsgContext, needGp: number, needSp: 
     playerSp += 1;
     playerCp -= 10;
   }
-  while (playerSp < 0) {
-    playerSp += 10;
-    playerGp -= 1;
-  }
   while (playerCp < 0) {
     playerCp += 10;
     playerSp -= 1;
+  }
+  while (playerSp < 0) {
+    playerSp += 10;
+    playerGp -= 1;
   }
   seal.vars.intSet(ctx, 'gp', playerGp);
   seal.vars.intSet(ctx, 'sp', playerSp);

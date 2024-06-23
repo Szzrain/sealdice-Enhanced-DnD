@@ -44,7 +44,7 @@ function main() {
   // 编写指令
   const cmdInventory = seal.ext.newCmdItemInfo();
   cmdInventory.name = 'inventory';
-  cmdInventory.help = '物品栏：\n.inventory: 查看背包物品\n.inventory add 物品 [数量]: 添加物品\ninventory remove 物品 [数量]: 移除物品\ninventory view 物品: 查看物品属性';
+  cmdInventory.help = '物品栏：\n.inventory: 查看背包物品\n.inventory add 物品 [数量]: 添加物品\ninventory use 物品 [数量]: 使用\n.inventory buy 物品: 购买物品（根据价格扣除角色卡的gp，sp和cp属性）';
   cmdInventory.allowDelegate = true;
   cmdInventory.solve = (rctx, msg, cmdArgs) => {
     let val = cmdArgs.getArgN(1);
@@ -93,9 +93,9 @@ function main() {
         let playerItem = player.items.get(itemName);
         if (!playerItem) {
           playerItem = new InventoryInfo(itemName, 0);
+          playerItem.use = itemInfo.use;
         }
         playerItem.count += num;
-        playerItem.use = itemInfo.use;
         player.items.set(itemName, playerItem);
         save();
         seal.replyToSender(rctx, msg, `已添加${num}个${itemName}`);
@@ -103,14 +103,16 @@ function main() {
       }
       case 'buy': {
         const itemName = cmdArgs.getArgN(2);
+        const itemNum = cmdArgs.getArgN(3) || "1";
+        let num = parseInt(itemNum);
+        if (isNaN(num) || num < 1) {
+          seal.replyToSender(rctx, msg, `购买物品失败：数量不合法，应为正整数`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
         let itemInfo = itemMap.get(itemName);
         if (!itemInfo) {
           seal.replyToSender(rctx, msg, `购买物品失败：未找到物品${itemName}`);
           return seal.ext.newCmdExecuteResult(true);
-        }
-        let playerItem = player.items.get(itemName);
-        if (!playerItem) {
-          playerItem = new InventoryInfo(itemName, 0);
         }
         let price = itemInfo.price;
         let playerGp = seal.vars.intGet(rctx, "gp");
@@ -120,12 +122,16 @@ function main() {
           seal.replyToSender(rctx, msg, `购买物品失败：gp,sp,或cp未录入`);
           return seal.ext.newCmdExecuteResult(true);
         }
-        if (!playerReduceMoney(mctx, price.gp, price.sp, price.cp)) {
+        if (!playerReduceMoney(mctx, price.gp*num, price.sp*num, price.cp*num)) {
           seal.replyToSender(rctx, msg, `购买物品失败：你的货币不足`);
           return seal.ext.newCmdExecuteResult(true);
         }
-        playerItem.count++;
-        playerItem.use = itemInfo.use;
+        let playerItem = player.items.get(itemName);
+        if (!playerItem) {
+          playerItem = new InventoryInfo(itemName, 0);
+          playerItem.use = itemInfo.use;
+        }
+        playerItem.count += num;
         player.items.set(itemName, playerItem);
         save();
         seal.replyToSender(rctx, msg, `已购买${itemName}`);
@@ -163,7 +169,7 @@ function main() {
         let isEmpty = true;
         player.items.forEach((value, key) => {
           if (value.count > 0) {
-            text += `${key}: ${value.count}\n`;
+            text += `${key}: ${value.count} 剩余使用次数: ${value.use}\n`;
             isEmpty = false;
           }
         })
@@ -183,6 +189,9 @@ function main() {
     let text = '商店：\n';
     let isEmpty = true;
     itemMap.forEach((value, key) => {
+      if (!value.canBuy) {
+        return;
+      }
       text += `${key}: 价格 ${value.price.gp} gp ${value.price.sp} sp ${value.price.cp} cp\n`;
       isEmpty = false;
     })

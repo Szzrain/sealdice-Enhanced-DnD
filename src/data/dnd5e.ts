@@ -46,4 +46,68 @@ export const DND_ADVENTURE_GEAR = {
       "重量：1磅\n" +
       "一种粘稠的流体，其一旦接触空气就会引起自燃。你可以用一个动作将这小瓶液体投到至多20尺远的地方，并利用冲击打破它。这个动作视为对一个生物或物件发动一次远程攻击，并将炽火胶视为一件临时武器。命中时，目标在它每回合开始时受到1d4点火焰伤害。被命中生物可以使用动作进行一次DC10的敏捷检定，以扑灭火焰来结束该伤害效应。\n"
   },
+  "箭": {
+    "alias": ["箭Arrows","Arrows"],
+    "price": {
+      "gp": 1,
+      "sp": 0,
+      "cp": 0
+    },
+    "use": 20,
+    "weight": 1,
+    "canBuy": true,
+    "description": "PHB装备:箭/\n" +
+      "箭 Arrows(20)\n" +
+      "弹药\n" +
+      "价格：1gp\n" +
+      "重量：1磅"
+  },
+  "吹矢": {
+    "alias": ["吹矢Blowgun Needles","Blowgun Needles"],
+    "price": {
+      "gp": 1,
+      "sp": 0,
+      "cp": 0
+    },
+    "use": 50,
+    "weight": 1,
+    "canBuy": true,
+    "description": "PHB装备:吹矢/\n" +
+      "吹矢 Blowgun Needles(50)\n" +
+      "弹药\n" +
+      "价格：1gp\n" +
+      "重量：1磅"
+  },
+  "弩矢": {
+    "alias": ["弩矢Crossbow Bolts","Crossbow Bolts"],
+    "price": {
+      "gp": 1,
+      "sp": 0,
+      "cp": 0
+    },
+    "use": 20,
+    "weight": 1.5,
+    "canBuy": true,
+    "description": 'PHB装备:弩矢/\n' +
+      '弩矢 Crossbow Bolts(20)\n' +
+      '弹药\n' +
+      '价格：1gp\n' +
+      '重量：1.5磅\n'
+  },
+  "投石索弹丸": {
+    "alias": ["投石索弹丸Sling Bullets","Sling Bullets"],
+    "price": {
+      "gp": 0,
+      "sp": 0,
+      "cp": 4
+    },
+    "use": 20,
+    "weight": 1.5,
+    "canBuy": true,
+    "description": "PHB装备:投石索弹丸/\n" +
+      "投石索弹丸 Sling Bullets(20)\n" +
+      "弹药\n" +
+      "价格：4gp\n" +
+      "重量：1.5磅"
+  },
 }
