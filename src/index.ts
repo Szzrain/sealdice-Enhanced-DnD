@@ -185,7 +185,7 @@ function main() {
   const cmdShop = seal.ext.newCmdItemInfo();
   cmdShop.name = 'shop';
   cmdShop.help = '商店：\n.shop: 查看商店物品';
-  cmdShop.solve = (rctx, msg, cmdArgs) => {
+  cmdShop.solve = (rctx, msg, _) => {
     let text = '商店：\n';
     let isEmpty = true;
     itemMap.forEach((value, key) => {

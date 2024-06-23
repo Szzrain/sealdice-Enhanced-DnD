@@ -69,6 +69,8 @@ export class Item {
       item.count--;
       if (item.count > 0) {
         item.use = this.use;
+      } else {
+        player.items.delete(this.name);
       }
       return "你使用并消耗了" + this.name + "，剩余" + item.count + "个";
     }
