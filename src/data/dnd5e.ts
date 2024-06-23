@@ -8,7 +8,7 @@ export const DND_ADVENTURE_GEAR = {
     },
     "use": -1,
     "weight": 2,
-    "sell": true,
+    "canBuy": true,
     "description": "PHB装备:算盘/\n" +
       "算盘 Abacus\n" +
       "价格：2gp\n" +
@@ -23,7 +23,7 @@ export const DND_ADVENTURE_GEAR = {
     },
     "use": 1,
     "weight": 1,
-    "sell": true,
+    "canBuy": true,
     "description": "PHB装备:强酸/\n" +
       "强酸 Acid（小瓶 Vial）\n" +
       "价格：25gp\n" +
@@ -39,7 +39,7 @@ export const DND_ADVENTURE_GEAR = {
     },
     "use": 1,
     "weight": 1,
-    "sell": true,
+    "canBuy": true,
     "description": "PHB装备:炽火胶/\n" +
       "炽火胶 Alchemist's Fire（扁瓶 Flask）\n" +
       "价格：50gp\n" +

@@ -243,7 +243,7 @@ declare namespace seal {
   }
 
   /** 代骰模式下，获取被代理人信息 */
-  export function getCtxProxyFirst(ctx: MsgContext, msg: Message): MsgContext;
+  export function getCtxProxyFirst(ctx: MsgContext, cmdArgs: CmdArgs): MsgContext;
   /** 回复发送者(发送者私聊即私聊回复，群内即群内回复) */
   export function replyToSender(ctx: MsgContext, msg: Message, text: string): void;
   /** 回复发送者(私聊回复，典型应用场景如暗骰) */

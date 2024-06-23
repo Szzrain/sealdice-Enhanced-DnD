@@ -1,6 +1,5 @@
-import { sample } from "lodash-es";
-import {generateUUID, nameList} from "./utils";
-import {Player} from "./types";
+import {generateUUID, loadItemMap, playerReduceMoney} from "./utils";
+import {InventoryInfo, Player} from "./types";
 
 function main() {
   // 注册扩展
@@ -27,10 +26,20 @@ function main() {
   }
 
   function save() {
-    ext.storageSet("playerMap", JSON.stringify(Object.fromEntries(playerMap)));
+    let playerMapTemp = new Map<string, object>();
+    playerMap.forEach((value, key) => {
+      let userMapTemp = new Map<string, object>();
+      value.forEach((value, key) => {
+        userMapTemp.set(key, value);
+      });
+      playerMapTemp.set(key, Object.fromEntries(userMapTemp));
+    });
+    ext.storageSet("playerMap", JSON.stringify(Object.fromEntries(playerMapTemp)));
   }
 
   const playerMap = playerLoad();
+
+  const itemMap = loadItemMap();
 
   // 编写指令
   const cmdInventory = seal.ext.newCmdItemInfo();
@@ -40,7 +49,7 @@ function main() {
   cmdInventory.solve = (rctx, msg, cmdArgs) => {
     let val = cmdArgs.getArgN(1);
     let text = '';
-    let mctx = seal.getCtxProxyFirst(rctx, msg);
+    let mctx = seal.getCtxProxyFirst(rctx, cmdArgs);
     let userId = mctx.player.userId;
     let msgTaskArgs = [rctx.endPoint.userId, rctx.group.groupId, msg.guildId, userId, (msg.messageType === "private")];
     let userMap = playerMap.get(userId);
@@ -53,6 +62,7 @@ function main() {
       player = new Player(msgTaskArgs, seal.format(mctx, `{$t玩家}`));
       seal.vars.strSet(mctx, `$bind_inv`, generateUUID());
       userMap.set(seal.vars.strGet(mctx, `$bind_inv`)[0], player);
+      save();
       text += "已初始化物品栏并自动绑定\n";
       text += "请不要删除角色卡中的 $bind_inv 变量\n\n";
     } else {
@@ -68,24 +78,121 @@ function main() {
         return seal.ext.newCmdExecuteResult(true);
       }
       case 'add': {
-        const item = cmdArgs.getArgN(2);
+        const itemName = cmdArgs.getArgN(2);
         const numRaw = cmdArgs.getArgN(3) || "1";
         let num = parseInt(numRaw);
         if (isNaN(num) || num < 1) {
           seal.replyToSender(rctx, msg, `添加物品失败：数量不合法，应为正整数`);
           return seal.ext.newCmdExecuteResult(true);
         }
-        seal.replyToSender(rctx, msg, `已添加${num}个${item}`);
+        let itemInfo = itemMap.get(itemName);
+        if (!itemInfo) {
+          seal.replyToSender(rctx, msg, `添加物品失败：未找到物品${itemName}`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        let playerItem = player.items.get(itemName);
+        if (!playerItem) {
+          playerItem = new InventoryInfo(itemName, 0);
+        }
+        playerItem.count += num;
+        playerItem.use = itemInfo.use;
+        player.items.set(itemName, playerItem);
+        save();
+        seal.replyToSender(rctx, msg, `已添加${num}个${itemName}`);
+        return seal.ext.newCmdExecuteResult(true);
+      }
+      case 'buy': {
+        const itemName = cmdArgs.getArgN(2);
+        let itemInfo = itemMap.get(itemName);
+        if (!itemInfo) {
+          seal.replyToSender(rctx, msg, `购买物品失败：未找到物品${itemName}`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        let playerItem = player.items.get(itemName);
+        if (!playerItem) {
+          playerItem = new InventoryInfo(itemName, 0);
+        }
+        let price = itemInfo.price;
+        let playerGp = seal.vars.intGet(rctx, "gp");
+        let playerSp = seal.vars.intGet(rctx, "sp");
+        let playerCp = seal.vars.intGet(rctx, "cp");
+        if (!playerGp[1] || !playerSp[1] || !playerCp[1]) {
+          seal.replyToSender(rctx, msg, `购买物品失败：gp,sp,或cp未录入`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        if (!playerReduceMoney(mctx, price.gp, price.sp, price.cp)) {
+          seal.replyToSender(rctx, msg, `购买物品失败：你的货币不足`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        playerItem.count++;
+        playerItem.use = itemInfo.use;
+        player.items.set(itemName, playerItem);
+        save();
+        seal.replyToSender(rctx, msg, `已购买${itemName}`);
+        return seal.ext.newCmdExecuteResult(true);
+      }
+      case 'use': {
+        const itemName = cmdArgs.getArgN(2);
+        let playerItem = player.items.get(itemName);
+        if (!playerItem) {
+          seal.replyToSender(rctx, msg, `使用物品失败：你没有${itemName}`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        let itemInfo = itemMap.get(itemName);
+        if (!itemInfo) {
+          seal.replyToSender(rctx, msg, `使用物品失败：未找到物品${itemName}`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        let result = itemInfo.useItem(rctx, msg, player, playerItem);
+        save();
+        seal.replyToSender(rctx, msg, result);
+        return seal.ext.newCmdExecuteResult(true);
+      }
+      case 'des': {
+        const itemName = cmdArgs.getArgN(2);
+        let itemInfo = itemMap.get(itemName);
+        if (!itemInfo) {
+          seal.replyToSender(rctx, msg, `查看物品失败：未找到物品${itemName}`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        seal.replyToSender(rctx, msg, itemInfo.description);
         return seal.ext.newCmdExecuteResult(true);
       }
       default: {
-        // 命令为 .seal XXXX，取第一个参数为名字
-        if (!val) val = sample(nameList); // 无参数，随机名字
-        seal.replyToSender(rctx, msg, `你抓到一只海豹！取名为${val}\n它的逃跑意愿为${Math.ceil(Math.random() * 100)}`);
+        text += `物品栏：\n`;
+        let isEmpty = true;
+        player.items.forEach((value, key) => {
+          if (value.count > 0) {
+            text += `${key}: ${value.count}\n`;
+            isEmpty = false;
+          }
+        })
+        if (isEmpty) {
+          text += '空空如也';
+        }
+        seal.replyToSender(rctx, msg, text);
         return seal.ext.newCmdExecuteResult(true);
       }
     }
   }
+
+  const cmdShop = seal.ext.newCmdItemInfo();
+  cmdShop.name = 'shop';
+  cmdShop.help = '商店：\n.shop: 查看商店物品';
+  cmdShop.solve = (rctx, msg, cmdArgs) => {
+    let text = '商店：\n';
+    let isEmpty = true;
+    itemMap.forEach((value, key) => {
+      text += `${key}: 价格 ${value.price.gp} gp ${value.price.sp} sp ${value.price.cp} cp\n`;
+      isEmpty = false;
+    })
+    if (isEmpty) {
+      text += '空空如也';
+    }
+    seal.replyToSender(rctx, msg, text);
+    return seal.ext.newCmdExecuteResult(true);
+  }
+  ext.cmdMap['shop'] = cmdShop;
 
   // 注册命令
   ext.cmdMap['inventory'] = cmdInventory;
