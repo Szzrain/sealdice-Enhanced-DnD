@@ -44,7 +44,7 @@ function main() {
   // 编写指令
   const cmdInventory = seal.ext.newCmdItemInfo();
   cmdInventory.name = 'inventory';
-  cmdInventory.help = '物品栏：\n.inventory: 查看背包物品\n.inventory add 物品 [数量]: 添加物品\ninventory use 物品 [数量]: 使用\n.inventory buy 物品: 购买物品（根据价格扣除角色卡的gp，sp和cp属性）';
+  cmdInventory.help = '物品栏：\n.inventory: 查看背包物品\n.inventory add 物品 [数量]: 添加物品\ninventory use 物品 [数量]: 使用\n.inventory buy 物品: 购买物品（根据价格扣除角色卡的gp，sp和cp属性）\n.inventory remove 物品 [数量]: 移除物品\n.inventory fmt: 强制绑定物品栏至当前角色\n.inventory des 物品: 查看物品描述\n.inventory help: 查看帮助';
   cmdInventory.allowDelegate = true;
   cmdInventory.solve = (rctx, msg, cmdArgs) => {
     let val = cmdArgs.getArgN(1);
@@ -141,7 +141,7 @@ function main() {
         const itemName = cmdArgs.getArgN(2);
         let playerItem = player.items.get(itemName);
         if (!playerItem) {
-          seal.replyToSender(rctx, msg, `使用物品失败：你没有${itemName}`);
+          seal.replyToSender(rctx, msg, `使用物品失败：${seal.format(mctx, "{$t玩家}")}没有${itemName}`);
           return seal.ext.newCmdExecuteResult(true);
         }
         let itemInfo = itemMap.get(itemName);
@@ -152,6 +152,39 @@ function main() {
         let result = itemInfo.useItem(rctx, msg, player, playerItem);
         save();
         seal.replyToSender(rctx, msg, result);
+        return seal.ext.newCmdExecuteResult(true);
+      }
+      case 'remove': {
+        const itemName = cmdArgs.getArgN(2);
+        let playerItem = player.items.get(itemName);
+        if (!playerItem) {
+          seal.replyToSender(rctx, msg, `移除物品失败：${seal.format(mctx, "{$t玩家}")}没有${itemName}`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        let itemInfo = itemMap.get(itemName);
+        if (!itemInfo) {
+          seal.replyToSender(rctx, msg, `移除物品失败：未找到物品${itemName}`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        let numRaw = cmdArgs.getArgN(3) || "1";
+        let num = parseInt(numRaw);
+        if (isNaN(num) || num < 1) {
+          seal.replyToSender(rctx, msg, `移除物品失败：数量不合法，应为正整数`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        if (playerItem.count < num) {
+          seal.replyToSender(rctx, msg, `移除物品失败：${seal.format(mctx, "{$t玩家}")}没有足够的${itemName}`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
+        playerItem.count -= num;
+        if (playerItem.count === 0) {
+          player.items.delete(itemName);
+        } else {
+          playerItem.use = itemInfo.use;
+          player.items.set(itemName, playerItem);
+        }
+        save();
+        seal.replyToSender(rctx, msg, `已从${seal.format(mctx, "{$t玩家}")}的物品栏移除${num}个${itemName}`);
         return seal.ext.newCmdExecuteResult(true);
       }
       case 'fmt': {
@@ -171,6 +204,10 @@ function main() {
         return seal.ext.newCmdExecuteResult(true);
       }
       default: {
+        if (val) {
+          seal.replyToSender(rctx, msg, `未知参数：${val}，请使用.inv help查看帮助`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
         text += `${seal.format(mctx, "{$t玩家}")}的物品栏：\n`;
         let isEmpty = true;
         player.items.forEach((value, key) => {
