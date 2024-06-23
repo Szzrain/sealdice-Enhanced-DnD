@@ -47,9 +47,12 @@ export class Item {
     this.weight = obj.weight;
     this.alias = obj.alias;
     this.description = obj.description;
+    this.useFunc = obj.useFunc;
+    this.shortRestFunc = obj.shortRestFunc;
+    this.longRestFunc = obj.longRestFunc;
   }
 
-  useItem(ctx: any, msg: any, player: Player, item: InventoryInfo) {
+  useItem(ctx: seal.MsgContext, msg: seal.Message, player: Player, item: InventoryInfo) {
     if (this.useFunc) {
       return this.useFunc(ctx, msg, player, item);
     }

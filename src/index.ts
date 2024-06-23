@@ -149,7 +149,7 @@ function main() {
           seal.replyToSender(rctx, msg, `使用物品失败：未找到物品${itemName}`);
           return seal.ext.newCmdExecuteResult(true);
         }
-        let result = itemInfo.useItem(rctx, msg, player, playerItem);
+        let result = itemInfo.useItem(mctx, msg, player, playerItem);
         save();
         seal.replyToSender(rctx, msg, result);
         return seal.ext.newCmdExecuteResult(true);
@@ -201,6 +201,12 @@ function main() {
           return seal.ext.newCmdExecuteResult(true);
         }
         seal.replyToSender(rctx, msg, itemInfo.description);
+        return seal.ext.newCmdExecuteResult(true);
+      }
+      case 'reset': {
+        playerMap.delete(userId);
+        save();
+        seal.replyToSender(rctx, msg, `已重置${seal.format(mctx, "{$t玩家}")}的所有绑定物品栏`);
         return seal.ext.newCmdExecuteResult(true);
       }
       default: {
@@ -279,7 +285,7 @@ function main() {
   ext.cmdMap['views'] = cmdViewS;
 
   const cmdViewI = seal.ext.newCmdItemInfo();
-  cmdViewI.name = 'views';
+  cmdViewI.name = 'viewi';
   cmdViewI.help = '查看属性 int';
   cmdViewI.solve = (ctx, msg, cmdArgs) => {
     let val = seal.vars.intGet(ctx, `${cmdArgs.getArgN(1)}`);

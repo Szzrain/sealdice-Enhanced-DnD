@@ -1,3 +1,5 @@
+import {InventoryInfo, Player} from "../types";
+
 export const DND_ADVENTURE_GEAR = {
   //物品名称
   "算盘": {
@@ -132,4 +134,52 @@ export const DND_ADVENTURE_GEAR = {
       "价格：50gp\n" +
       "喝下瓶内液体的生物在1小时内进行对抗对毒素的豁免检定时具有优势。它无法为不死生物或构装生物提供任何增益。"
   },
+  "滚珠": {
+    "alias": ["滚珠Ball Bearings","Ball Bearings"],
+    "price": {
+      "gp": 1,
+      "sp": 0,
+      "cp": 0
+    },
+    "use": 1,
+    "weight": 2,
+    "canBuy": true,
+    "description": "PHB装备:滚珠/\n" +
+      "滚珠 Ball Bearings（一包1000粒）\n" +
+      "价格：1gp\n" +
+      "重量：2磅\n" +
+      "你可以用一个动作将这些小金属珠从袋子中洒出，并覆盖一片边长10尺的方形区域。穿过这片区域的生物必须进行一次DC10的敏捷豁免，豁免失败则摔至倒地。以半速穿过该区域的生物不需要进行该豁免。\n"
+  },
+}
+
+export const DND_ARMOR = {
+  "布甲": {
+    "alias": ["布甲Padded","Padded"],
+    "price": {
+      "gp": 5,
+      "sp": 0,
+      "cp": 0
+    },
+    "use": -1,
+    "weight": 8,
+    "canBuy": true,
+    "description": "PHB护甲:布甲/\n" +
+      "布甲 Padded\n" +
+      "类型：轻甲\n" +
+      "价格：5gp\n" +
+      "护甲等级(AC)：11+敏捷调整值\n" +
+      "隐匿劣势\n" +
+      "重量：8磅\n" +
+      "布甲由数层布料与棉料的衬里构成。\n",
+    useFunc: (ctx: seal.MsgContext, msg: seal.Message, player: Player, item: InventoryInfo) => {
+      let dex = seal.vars.intGet(ctx, 'dex');
+      if (!dex[1]) {
+        return "使用失败：你没有录入敏捷属性";
+      }
+      let dexMod = Math.floor((dex[0] - 10) / 2);
+      let ac = 11 + dexMod;
+      seal.vars.intSet(ctx, 'ac', ac);
+      return `${seal.format(ctx, "{$t玩家}")}穿上了布甲，护甲等级为` + ac;
+    }
+  }
 }
