@@ -1,29 +1,9 @@
-import {Item} from "./types";
-import {DND_ADVENTURE_GEAR, DND_ARMOR} from "./data/dnd5e";
-
 export function generateUUID() {
   return 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/x/g, (c) => {
     const r = Math.random() * 16 | 0;
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
-}
-
-export function loadItemMap() {
-  let itemMap = new Map<string, Item>();
-  for (let [key, value] of Object.entries(DND_ADVENTURE_GEAR)) {
-    let item = new Item(key, value.price);
-    item.fromJSON(value);
-    console.log(key+":"+item);
-    itemMap.set(key, item);
-  }
-  for (let [key, value] of Object.entries(DND_ARMOR)) {
-    let item = new Item(key, value.price);
-    item.fromJSON(value);
-    console.log(key+":"+item);
-    itemMap.set(key, item);
-  }
-  return itemMap;
 }
 
 export function playerReduceMoney(ctx: seal.MsgContext, needGp: number, needSp: number, needCp: number) {
