@@ -99,6 +99,12 @@ export function getLrCommand(ext: ExtInfo) {
         doLongRest(ext, rctx, msg, cmdArgs);
         break;
       }
+      case 'clr': {
+        player.longRest = new Map<string, string>();
+        Save(playerMap, ext);
+        seal.replyToSender(rctx, msg, `${seal.format(mctx, "{$t玩家}")}已清空长休属性`);
+        break;
+      }
       case 'show': {
         let text = '扩展长休属性:\n';
         let isEmpty = true;
