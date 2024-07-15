@@ -2,7 +2,7 @@
 // @name         Enhanced DnD
 // @author       Szzrain
 // @version      1.0.0
-// @description  一个 D&D5e 的额外功能插件，提供物品栏，商店，拓展长休/短休，自定义魔法物品等功能
+// @description  一个 D&D5e 的额外功能插件，提供物品栏，商店，拓展长休/短休，自定义魔法物品等功能，使用.ext
 // @timestamp    1719107959
 // @license      AGPL-3.0
 // @homepageURL  https://github.com/Szzrain/sealdice-Enhanced-DnD

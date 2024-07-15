@@ -18,7 +18,7 @@ function main() {
   ext.cmdMap['shop'] = getShopCommand(ext);
 
   ext.cmdMap['inventory'] = getInventoryCommand(ext);
-  ext.cmdMap['inv'] = getInventoryCommand(ext);
+  ext.cmdMap['inv'] = ext.cmdMap['inventory'];
 
   ext.cmdMap['lr'] = getLrCommand(ext);
 
