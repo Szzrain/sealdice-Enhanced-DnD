@@ -128,6 +128,9 @@ export function getLrCommand(ext: ExtInfo) {
             if (!seal.vars.intGet(mctx, key+"max")[1]) {
               throw new Error(`设置扩展长休错误: ${key}max 未设置或不为整数`);
             }
+            if (key.endsWith('max')) {
+              throw new Error(`设置扩展长休错误: ${key} 不能以max结尾，请使用.st ${key} 设置最大值`);
+            }
             let value = argPair[1];
             argArr.push({key, value});
             if (!player.longRest) {
