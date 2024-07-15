@@ -63,7 +63,7 @@ function main() {
           current = 0;
         }
         let setVal = val + current;
-        if (val > maxVal[0] + current) {
+        if (val + current > maxVal[0]) {
           setVal = maxVal[0];
         }
         seal.vars.intSet(mctx, `${key}`, setVal);
