@@ -6,7 +6,6 @@ import {COMMAND_LONGREST_HELP} from "../data/values";
 import MsgContext = seal.MsgContext;
 
 export function doLongRest(ext: ExtInfo, rctx: MsgContext, msg: any, cmdArgs: any) {
-  console.log('longrest triggered');
   let mctx = seal.getCtxProxyFirst(rctx, cmdArgs);
   let userId = mctx.player.userId;
   let msgTaskArgs = [rctx.endPoint.userId, rctx.group.groupId, msg.guildId, userId, (msg.messageType === "private")];
@@ -47,11 +46,9 @@ export function doLongRest(ext: ExtInfo, rctx: MsgContext, msg: any, cmdArgs: an
       setVal = maxVal[0];
     }
     seal.vars.intSet(mctx, `${key}`, setVal);
-    console.log(`longrest: ${key} set to ${setVal}`);
     longRestCount++;
   });
   if (longRestCount === 0) {
-    console.log('longrest: no attribute updated');
     return;
   } else {
     setTimeout(() => {

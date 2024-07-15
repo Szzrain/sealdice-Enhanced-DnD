@@ -1,6 +1,6 @@
 import {Item, Player} from "../types";
 import ExtInfo = seal.ExtInfo;
-import {DND_ADVENTURE_GEAR, DND_ARMOR} from "../data/dnd5e";
+import {DND_ADVENTURE_GEAR, DND_ARMOR} from "../data/dnd5e_gear";
 
 export var playerMap: Map<string, Map<string, Player>>
 
