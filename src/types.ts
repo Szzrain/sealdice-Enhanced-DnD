@@ -147,6 +147,9 @@ export class Player {
       itemMapTemp.set(key, item);
     });
     let longRestTemp = new Map<string, string>();
+    if (!obj.longRest) {
+      obj.longRest = {};
+    }
     Object.entries(obj.longRest).forEach(([key, value]) => {
       longRestTemp.set(key, <string>value);
     });

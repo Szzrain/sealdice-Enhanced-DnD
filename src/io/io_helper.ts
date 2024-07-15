@@ -45,7 +45,11 @@ function playerLoad(ext: ExtInfo) {
 export function Save(playerMap: Map<string, Map<string, Player>>, ext: ExtInfo) {
   let playerMapTemp = new Map<string, object>();
   playerMap.forEach((value, key) => {
-    playerMapTemp.set(key, Object.fromEntries(value));
+    let userMapTemp = new Map<string, object>();
+    value.forEach((value, key) => {
+      userMapTemp.set(key, value);
+    });
+    playerMapTemp.set(key, Object.fromEntries(userMapTemp));
   });
   ext.storageSet("playerMap", JSON.stringify(Object.fromEntries(playerMapTemp)));
 }
