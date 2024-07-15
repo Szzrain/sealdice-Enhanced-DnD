@@ -11,7 +11,7 @@ export function Init(ext: ExtInfo) {
   itemMap = loadItemMap();
 }
 
-export function loadItemMap() {
+function loadItemMap() {
   let itemMap = new Map<string, Item>();
   for (let [key, value] of Object.entries(DND_ADVENTURE_GEAR)) {
     let item = new Item(key, value.price);
@@ -45,11 +45,7 @@ function playerLoad(ext: ExtInfo) {
 export function Save(playerMap: Map<string, Map<string, Player>>, ext: ExtInfo) {
   let playerMapTemp = new Map<string, object>();
   playerMap.forEach((value, key) => {
-    let userMapTemp = new Map<string, object>();
-    value.forEach((value, key) => {
-      userMapTemp.set(key, value);
-    });
-    playerMapTemp.set(key, Object.fromEntries(userMapTemp));
+    playerMapTemp.set(key, Object.fromEntries(value));
   });
   ext.storageSet("playerMap", JSON.stringify(Object.fromEntries(playerMapTemp)));
 }

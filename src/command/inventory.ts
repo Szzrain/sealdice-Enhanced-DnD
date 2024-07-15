@@ -2,12 +2,13 @@ import ExtInfo = seal.ExtInfo;
 import {itemMap, playerMap, Save} from "../io/io_helper";
 import {InventoryInfo, Player} from "../types";
 import {generateUUID, playerReduceMoney} from "../utils";
+import {COMMAND_INVENTORY_HELP} from "../data/values";
 
 export function getInventoryCommand(ext: ExtInfo) {
   // 编写指令
   const cmdInventory = seal.ext.newCmdItemInfo();
   cmdInventory.name = 'inventory';
-  cmdInventory.help = '物品栏：\n.inventory: 查看背包物品\n.inventory add 物品 [数量]: 添加物品\ninventory use 物品 [数量]: 使用\n.inventory buy 物品: 购买物品（根据价格扣除角色卡的gp，sp和cp属性）\n.inventory remove 物品 [数量]: 移除物品\n.inventory fmt: 强制绑定物品栏至当前角色\n.inventory des 物品: 查看物品描述\n.inventory help: 查看帮助';
+  cmdInventory.help = COMMAND_INVENTORY_HELP;
   cmdInventory.allowDelegate = true;
   cmdInventory.solve = (rctx, msg, cmdArgs) => {
     let val = cmdArgs.getArgN(1);

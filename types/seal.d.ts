@@ -165,6 +165,7 @@ declare namespace seal {
     storageGet(key: string): string;
 
     onNotCommandReceived: (ctx: MsgContext, msg: Message) => void;
+    onCommandReceived: (ctx: MsgContext, msg: Message, cmdArgs: CmdArgs) => void;
   }
 
   interface CmdExecuteResult {
