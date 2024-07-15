@@ -78,6 +78,10 @@ export function getInventoryCommand(ext: ExtInfo) {
           seal.replyToSender(rctx, msg, `购买物品失败：未找到物品${itemName}`);
           return seal.ext.newCmdExecuteResult(true);
         }
+        if (!itemInfo.canBuy) {
+          seal.replyToSender(rctx, msg, `购买物品失败：${itemName}不可购买`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
         let price = itemInfo.price;
         let playerGp = seal.vars.intGet(rctx, "gp");
         let playerSp = seal.vars.intGet(rctx, "sp");
