@@ -107,10 +107,12 @@ export function getLrCommand(ext: ExtInfo) {
         Save(playerMap, ext);
         let text = '';
         if (delSuccArr.length > 0) {
-          text += `已删除长休属性:\n${delSuccArr.join('\n')}`;
+          text += `${seal.format(mctx, "{$t玩家}")}已删除长休属性:\n${delSuccArr.join('\n')}`;
+        } else {
+          text += `${seal.format(mctx, "{$t玩家}")}未删除任何长休属性`;
         }
         if (delFailArr.length > 0) {
-          text += `未找到长休属性:\n${delFailArr.join('\n')}`;
+          text += `\n未找到长休属性:\n${delFailArr.join('\n')}`;
         }
         seal.replyToSender(rctx, msg, text);
         break;
