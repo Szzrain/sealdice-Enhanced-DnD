@@ -1,4 +1,4 @@
-var filename = 'sealdice-enhanced-dnd.js'
+var filename = '[DND增强] sealdice-enhanced-dnd.js'
 
 module.exports = {
   dev: {
