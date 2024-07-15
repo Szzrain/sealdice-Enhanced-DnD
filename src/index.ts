@@ -27,45 +27,6 @@ function main() {
       doLongRest(ext, rctx, msg, cmdArgs);
     }
   }
-
-  const cmdView = seal.ext.newCmdItemInfo();
-  cmdView.name = 'view';
-  cmdView.help = '查看属性raw';
-  cmdView.solve = (ctx, msg, cmdArgs) => {
-    seal.replyToSender(ctx, msg, seal.format(ctx, `{${cmdArgs.getArgN(1)}}`));
-    return seal.ext.newCmdExecuteResult(true);
-  }
-  ext.cmdMap['view'] = cmdView;
-
-  const cmdViewS = seal.ext.newCmdItemInfo();
-  cmdViewS.name = 'views';
-  cmdViewS.help = '查看属性 string';
-  cmdViewS.solve = (ctx, msg, cmdArgs) => {
-    let val = seal.vars.strGet(ctx, `${cmdArgs.getArgN(1)}`);
-    console.log(JSON.stringify(val));
-    if (!val[1]) {
-      seal.replyToSender(ctx, msg, 'views: 未找到属性');
-      return seal.ext.newCmdExecuteResult(true);
-    }
-    seal.replyToSender(ctx, msg, val[0]);
-    return seal.ext.newCmdExecuteResult(true);
-  }
-  ext.cmdMap['views'] = cmdViewS;
-
-  const cmdViewI = seal.ext.newCmdItemInfo();
-  cmdViewI.name = 'viewi';
-  cmdViewI.help = '查看属性 int';
-  cmdViewI.solve = (ctx, msg, cmdArgs) => {
-    let val = seal.vars.intGet(ctx, `${cmdArgs.getArgN(1)}`);
-    console.log(JSON.stringify(val));
-    if (!val[1]) {
-      seal.replyToSender(ctx, msg, 'viewi: 未找到属性');
-      return seal.ext.newCmdExecuteResult(true);
-    }
-    seal.replyToSender(ctx, msg, `${val[0]}`);
-    return seal.ext.newCmdExecuteResult(true);
-  }
-  ext.cmdMap['viewi'] = cmdViewI;
 }
 
 main();
