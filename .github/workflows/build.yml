@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+
+env:
+  PROJECT_NAME: "[DND增强] sealdice-enhanced-dnd"
+
+jobs:
+  build:
+    name: Build & Pre-release
+    permissions:
+      contents: write
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Code
+        uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install Dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PROJECT_NAME }}
+          path: dist/
+      - name: Pre-release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Latest Build
+          tag_name: pre-release
+          files: dist/${{ env.PROJECT_NAME }}.js
+          body: "> ⚠️注意️️：这是自动构建的预发布版本，非正式版本！"
+          prerelease: true
+          token: ${{ secrets.GITHUB_TOKEN }}
