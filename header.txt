@@ -6,4 +6,5 @@
 // @timestamp    1721085150
 // @license      AGPL-3.0
 // @homepageURL  https://github.com/Szzrain/sealdice-Enhanced-DnD
+// @updateUrl https://github.com/Szzrain/sealdice-Enhanced-DnD/releases/download/pre-release/sealdice-enhanced-dnd.js
 // ==/UserScript==
