@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhanced DnD
 // @author       Szzrain（QQ: 1970978827）
-// @version      1.0.1
+// @version      1.0.2
 // @description  一个 D&D5e 的额外功能插件，提供物品栏，商店，拓展长休等功能（目前部分完成），使用 .ext enhanced-dnd 来查看可用指令
 // @timestamp    1721085150
 // @license      AGPL-3.0

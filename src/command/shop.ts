@@ -26,10 +26,6 @@ export function getShopCommand(_: ExtInfo) {
     let start = (page - 1) * 10;
     let end = 10;
     itemMap.forEach((value, key) => {
-      if (!value.canBuy) {
-        text += `${key}: 不可购买\n`;
-        return;
-      }
       if (start > 0) {
         start--;
         return;
@@ -38,6 +34,10 @@ export function getShopCommand(_: ExtInfo) {
         return;
       }
       end--;
+      if (!value.canBuy) {
+        text += `${key}: 不可购买\n`;
+        return;
+      }
       text += `${key}: 价格`;
       let isFree = true;
       if (value.price.gp !== 0) {
