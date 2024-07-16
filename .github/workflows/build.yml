@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  PROJECT_NAME: "[DND增强] sealdice-enhanced-dnd"
+  PROJECT_NAME: "sealdice-enhanced-dnd"
 
 jobs:
   build:
@@ -25,9 +25,9 @@ jobs:
       - name: Build
         run: npm run build
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.PROJECT_NAME }}
+          name: ${{ env.PROJECT_NAME }}.js
           path: dist/
       - name: Pre-release
         uses: softprops/action-gh-release@v1
