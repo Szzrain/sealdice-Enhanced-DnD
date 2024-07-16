@@ -123,6 +123,7 @@ export class Player {
     this.msgTaskArgs = msgTaskArgs;
     this.name = name;
     this.items = new Map<string, InventoryInfo>();
+    this.longRest = new Map<string, string>();
   }
 
   public toJSON() {
