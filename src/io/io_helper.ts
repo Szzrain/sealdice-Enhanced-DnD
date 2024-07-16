@@ -16,13 +16,11 @@ function loadItemMap() {
   for (let [key, value] of Object.entries(DND_ADVENTURE_GEAR)) {
     let item = new Item(key, value.price);
     item.fromJSON(value);
-    console.log(key+":"+item);
     itemMap.set(key, item);
   }
   for (let [key, value] of Object.entries(DND_ARMOR)) {
     let item = new Item(key, value.price);
     item.fromJSON(value);
-    console.log(key+":"+item);
     itemMap.set(key, item);
   }
   return itemMap;

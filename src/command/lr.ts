@@ -25,37 +25,44 @@ export function doLongRest(ext: ExtInfo, rctx: MsgContext, msg: any, cmdArgs: an
     player.longRest = new Map<string, string>();
   }
   let longRestCount = 0;
-  player.longRest.forEach((value, key) => {
-    let val = parseInt(seal.format(mctx, `{${value}}`));
-    if (isNaN(val)) {
-      console.error(`longrest: ${key} value ${value} is not a number`);
+  try {
+    player.longRest.forEach((value, key) => {
+      let val = parseInt(seal.format(mctx, `{${value}}`));
+      if (isNaN(val)) {
+        throw new Error(`${seal.format(mctx, "{$t玩家}")}的扩展长休产生错误: ${key} 值不是整数`);
+      }
+      let maxVal = seal.format(mctx, `{${key}max}`);
+      let max = parseInt(maxVal);
+      if (isNaN(max) || max <= 0) {
+        throw new Error(`${seal.format(mctx, "{$t玩家}")}的扩展长休产生错误: ${key}max 未设置或不为正整数`);
+      }
+      let currentVal = seal.vars.intGet(mctx, `${key}`);
+      let current = currentVal[0];
+      if (!currentVal[1]) {
+        current = 0;
+      }
+      let setVal = val + current;
+      if (val + current > max) {
+        setVal = max;
+      }
+      seal.vars.intSet(mctx, `${key}`, setVal);
+      longRestCount++;
+    });
+    if (longRestCount === 0) {
+      return;
+    } else {
+      setTimeout(() => {
+        // 延迟发送消息
+        seal.replyToSender(rctx, msg, `${seal.format(mctx, "{$t玩家}")}的扩展长休：共计 ${longRestCount} 项属性已更新`);
+      }, 2000);
       return;
     }
-    let maxVal = seal.vars.intGet(mctx, `${key}max`);
-    if (!maxVal[1]) {
-      console.error(`longrest: ${key}max not found`);
-      return;
-    }
-    let currentVal = seal.vars.intGet(mctx, `${key}`);
-    let current = currentVal[0];
-    if (!currentVal[1]) {
-      current = 0;
-    }
-    let setVal = val + current;
-    if (val + current > maxVal[0]) {
-      setVal = maxVal[0];
-    }
-    seal.vars.intSet(mctx, `${key}`, setVal);
-    longRestCount++;
-  });
-  if (longRestCount === 0) {
-    return;
-  } else {
+  } catch (e) {
+    console.error(e);
     setTimeout(() => {
       // 延迟发送消息
-      seal.replyToSender(rctx, msg, `${seal.format(mctx, "{$t玩家}")}的扩展长休：共计 ${longRestCount} 项属性已更新`);
+      seal.replyToSender(rctx, msg, e);
     }, 2000);
-    return;
   }
 }
 
@@ -131,8 +138,10 @@ export function getLrCommand(ext: ExtInfo) {
             if (key.endsWith('max')) {
               throw new Error(`设置扩展长休错误: ${key} 不能以max结尾，请使用.st ${key} 设置最大值`);
             }
-            if (!seal.vars.intGet(mctx, key+"max")[1]) {
-              throw new Error(`设置扩展长休错误: ${key}max 未设置或不为整数`);
+            let maxVal = seal.format(mctx, `{${key}max}`);
+            let max = parseInt(maxVal);
+            if (isNaN(max) || max <= 0) {
+              throw new Error(`设置扩展长休错误: ${key}max 未设置或不为正整数`);
             }
             let value = argPair[1];
             argArr.push({key, value});
