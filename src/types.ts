@@ -117,6 +117,7 @@ export class Player {
   public msgTaskArgs: Array<string | false | true>;
   public items: Map<string, InventoryInfo>;
   public longRest: Map<string, string>;
+  public shortRest: Map<string, string>;
   public name: string;
 
   constructor(msgTaskArgs: Array<string | false | true>, name: string = "") {
@@ -124,6 +125,7 @@ export class Player {
     this.name = name;
     this.items = new Map<string, InventoryInfo>();
     this.longRest = new Map<string, string>();
+    this.shortRest = new Map<string, string>();
   }
 
   public toJSON() {
@@ -137,6 +139,7 @@ export class Player {
       name: this.name,
       items: Object.fromEntries(itemsTemp),
       longRest: Object.fromEntries(this.longRest),
+      shortRest: Object.fromEntries(this.shortRest),
     }
   }
 
@@ -154,7 +157,15 @@ export class Player {
     Object.entries(obj.longRest).forEach(([key, value]) => {
       longRestTemp.set(key, <string>value);
     });
+    let shortRestTemp = new Map<string, string>();
+    if (!obj.shortRest) {
+      obj.shortRest = {};
+    }
+    Object.entries(obj.shortRest).forEach(([key, value]) => {
+      shortRestTemp.set(key, <string>value);
+    });
     this.longRest = longRestTemp;
+    this.shortRest = shortRestTemp;
     this.msgTaskArgs = obj.msgTaskArgs;
     this.items = itemMapTemp;
     this.name = obj.name;

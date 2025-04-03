@@ -1,30 +1,21 @@
 import ExtInfo = seal.ExtInfo;
 import {playerMap, Save} from "../io/io_helper";
-import {Player} from "../types";
-import {generateUUID} from "../utils";
+import {getPlayer} from "../utils/utils";
 import {COMMAND_LONGREST_HELP} from "../data/values";
 import MsgContext = seal.MsgContext;
 
 export function doLongRest(ext: ExtInfo, rctx: MsgContext, msg: any, cmdArgs: any) {
   let mctx = seal.getCtxProxyFirst(rctx, cmdArgs);
-  let userId = mctx.player.userId;
-  let msgTaskArgs = [rctx.endPoint.userId, rctx.group.groupId, msg.guildId, userId, (msg.messageType === "private")];
-  let userMap = playerMap.get(userId);
-  if (!userMap) {
-    userMap = new Map<string, Player>();
-    playerMap.set(userId, userMap);
-  }
-  let player = userMap.get(seal.vars.strGet(mctx, `$bind_inv`)[0]);
-  if (!seal.vars.strGet(mctx, `$bind_inv`)[1] || !player) {
-    player = new Player(msgTaskArgs, seal.format(mctx, `{$t玩家}`));
-    seal.vars.strSet(mctx, `$bind_inv`, generateUUID());
-    userMap.set(seal.vars.strGet(mctx, `$bind_inv`)[0], player);
-    Save(playerMap, ext);
+  let player = getPlayer(mctx, msg, cmdArgs, ext);
+  if (!player) {
+    return;
   }
   if (!player.longRest) {
     player.longRest = new Map<string, string>();
   }
   let longRestCount = 0;
+  let oldVal = new Map<string, number>();
+  let newVal = new Map<string, number>();
   try {
     player.longRest.forEach((value, key) => {
       let val = parseInt(seal.format(mctx, `{${value}}`));
@@ -45,54 +36,39 @@ export function doLongRest(ext: ExtInfo, rctx: MsgContext, msg: any, cmdArgs: an
       if (val + current > max) {
         setVal = max;
       }
-      seal.vars.intSet(mctx, `${key}`, setVal);
+      // seal.vars.intSet(mctx, `${key}`, setVal);
+      oldVal.set(key, current);
+      newVal.set(key, setVal);
       longRestCount++;
     });
     if (longRestCount === 0) {
       return;
     } else {
-      setTimeout(() => {
-        // 延迟发送消息
-        seal.replyToSender(rctx, msg, `${seal.format(mctx, "{$t玩家}")}的扩展长休：共计 ${longRestCount} 项属性已更新`);
-      }, 2000);
+      let text = `${seal.format(mctx, "{$t玩家}")}的扩展长休：共计 ${longRestCount} 项属性已更新\n`;
+      newVal.forEach((value, key) => {
+        seal.vars.intSet(mctx, `${key}`, value);
+        text += `${key}: ${oldVal.get(key)} -> ${value}\n`;
+      });
+      seal.replyToSender(rctx, msg, text);
       return;
     }
   } catch (e) {
     console.error(e);
-    setTimeout(() => {
-      // 延迟发送消息
-      seal.replyToSender(rctx, msg, e);
-    }, 2000);
+    seal.replyToSender(rctx, msg, e);
   }
 }
 
 export function getLrCommand(ext: ExtInfo) {
   const cmdLr = seal.ext.newCmdItemInfo();
   cmdLr.name = 'lr';
-  cmdLr.help = COMMAND_LONGREST_HELP
+  cmdLr.help = COMMAND_LONGREST_HELP;
   cmdLr.allowDelegate = true;
   cmdLr.solve = (rctx, msg, cmdArgs) => {
     let val = cmdArgs.getArgN(1);
     let mctx = seal.getCtxProxyFirst(rctx, cmdArgs);
-    let userId = mctx.player.userId;
-    let msgTaskArgs = [rctx.endPoint.userId, rctx.group.groupId, msg.guildId, userId, (msg.messageType === "private")];
-    let userMap = playerMap.get(userId);
-    if (!userMap) {
-      userMap = new Map<string, Player>();
-      playerMap.set(userId, userMap);
-    }
-    let player = userMap.get(seal.vars.strGet(mctx, `$bind_inv`)[0]);
-    if (!seal.vars.strGet(mctx, `$bind_inv`)[1] || !player) {
-      player = new Player(msgTaskArgs, seal.format(mctx, `{$t玩家}`));
-      seal.vars.strSet(mctx, `$bind_inv`, generateUUID());
-      userMap.set(seal.vars.strGet(mctx, `$bind_inv`)[0], player);
-      Save(playerMap, ext);
-    } else {
-      let currentname = seal.format(mctx, `{$t玩家}`);
-      if (player.name !== currentname && val !== 'fmt') {
-        seal.replyToSender(rctx, msg, `检测到当前角色名与绑定物品栏时不符，物品栏已绑定至角色${player.name}，当前角色名：${currentname}，强制转换物品栏角色名请使用.inv fmt`);
-        return seal.ext.newCmdExecuteResult(true);
-      }
+    let player = getPlayer(mctx, msg, cmdArgs, ext, val == 'fmt');
+    if (!player) {
+      return seal.ext.newCmdExecuteResult(true);
     }
     switch (val) {
       case 'help': {

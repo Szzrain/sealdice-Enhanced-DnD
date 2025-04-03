@@ -12,6 +12,8 @@ declare namespace seal {
     isPrivate: boolean;
     /** 权限等级 40邀请者 50管理 60群主 100master */
     privilegeLevel: number;
+    /** 代骰附加文本 */
+    delegateText: string;
   }
   export interface EndPointInfo {
     id: string;
@@ -110,6 +112,8 @@ declare namespace seal {
     command: string;
     /** 指令参数，如“.ra 力量 测试”时，参数1为“力量”，参数2为“测试” */
     args: string[];
+    /** 关键字参数，如“.ra 50 --key=20 --asm”时，有两个kwarg，一个叫key，一个叫asm */
+    kwargs: Kwarg[];
     /** 当前被at的有哪些 */
     at: AtInfo[];
     /** 参数的原始文本 */
@@ -124,9 +128,11 @@ declare namespace seal {
     // specialExecuteTimes: number;
 
     /** 获取关键字参数，如“.ra 50 --key=20 --asm”时，有两个kwarg，一个叫key，一个叫asm */
-    getKwargs(key: string): Kwarg;
+    getKwarg(key: string): Kwarg;
     /** 获取第N个参数，从1开始，如“.ra 力量50 推门” 参数1为“力量50”，参数2是“推门” */
     getArgN(n: number): string;
+    /** 将第 n 个参数及之后参数用空格拼接起来; 如指令 `send to qq x1 x2`,n=3返回 `x1 x2` */
+    getRestArgsFrom(n: number): string;
   }
 
 

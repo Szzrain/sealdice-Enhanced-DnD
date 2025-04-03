@@ -20,6 +20,7 @@ export const COMMAND_INVENTORY_HELP =
 export const COMMAND_LONGREST_HELP =
   '扩展长休：\n' +
   '.longrest: 进行长休\n' +
+  '.longrest --no-ex: 进行长休而不执行扩展长休（纯原版长休）\n' +
   '.lr rest: 进行长休（跳过原版长休指令的逻辑）\n' +
   '.lr clr: 清空长休属性\n' +
   '.lr help: 查看帮助\n' +

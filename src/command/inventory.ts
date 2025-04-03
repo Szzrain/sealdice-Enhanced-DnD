@@ -1,7 +1,7 @@
 import ExtInfo = seal.ExtInfo;
 import {itemMap, playerMap, Save} from "../io/io_helper";
 import {InventoryInfo, Player} from "../types";
-import {generateUUID, playerReduceMoney} from "../utils";
+import {generateUUID, playerReduceMoney} from "../utils/utils";
 import {COMMAND_INVENTORY_HELP} from "../data/values";
 
 export function getInventoryCommand(ext: ExtInfo) {
@@ -24,7 +24,11 @@ export function getInventoryCommand(ext: ExtInfo) {
     let player = userMap.get(seal.vars.strGet(mctx, `$bind_inv`)[0]);
     if (!seal.vars.strGet(mctx, `$bind_inv`)[1] || !player) {
       player = new Player(msgTaskArgs, seal.format(mctx, `{$t玩家}`));
-      seal.vars.strSet(mctx, `$bind_inv`, generateUUID());
+      let uuid = generateUUID();
+      while (userMap.has(uuid)) {
+        uuid = generateUUID();
+      }
+      seal.vars.strSet(mctx, `$bind_inv`, uuid);
       userMap.set(seal.vars.strGet(mctx, `$bind_inv`)[0], player);
       Save(playerMap, ext);
       text += "已初始化物品栏并自动绑定\n";
@@ -90,7 +94,7 @@ export function getInventoryCommand(ext: ExtInfo) {
           seal.replyToSender(rctx, msg, `购买物品失败：gp,sp,或cp未录入，请先使用 .st 指令录入`);
           return seal.ext.newCmdExecuteResult(true);
         }
-        if (!playerReduceMoney(mctx, price.gp*num, price.sp*num, price.cp*num)) {
+        if (!playerReduceMoney(mctx, price.gp*num, price.sp*num, price.cp*num)[0]) {
           seal.replyToSender(rctx, msg, `购买物品失败：你的货币不足`);
           return seal.ext.newCmdExecuteResult(true);
         }

@@ -40,7 +40,7 @@ module.exports = {
     // Uses incremental compilation (see `chokidar.on`).
     // incremental: true,
     // Removes whitespace, etc. depending on `NODE_ENV=...`.
-    minify: false,
+    minify: true,
     // Bundles JavaScript to (see `entryPoints`).
     outfile: "dist/" + filename,
     // Others
