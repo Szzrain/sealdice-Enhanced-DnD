@@ -9,15 +9,18 @@ export function getPayCommand(_: ExtInfo) {
   cmdPay.allowDelegate = true;
   cmdPay.solve = (rctx, msg, cmdArgs) => {
     let mctx = seal.getCtxProxyFirst(rctx, cmdArgs);
+    let val = cmdArgs.getArgN(1);
+    if (!val) {
+      seal.replyToSender(rctx, msg, '支付失败，请输入支付金额，使用 .pay help 查看帮助');
+      return seal.ext.newCmdExecuteResult(true);
+    } else if (val === 'help') {
+      seal.replyToSender(rctx, msg, cmdPay.help);
+      return seal.ext.newCmdExecuteResult(true);
+    }
     let isDelegate = false;
     if (rctx.player.userId !== mctx.player.userId && rctx.delegateText !== '') {
       isDelegate = true;
       rctx.delegateText = `${seal.format(rctx, "{$t玩家}")}对${seal.format(mctx, "{$t玩家}")}的支付：\n`;
-    }
-    let val = cmdArgs.getArgN(1);
-    if (!val) {
-      seal.replyToSender(rctx, msg, '支付失败，请输入支付金额，使用例：.pay 100gp; .pay 100sp; .pay 100cp');
-      return seal.ext.newCmdExecuteResult(true);
     }
     let rawArgs = cmdArgs.getRestArgsFrom(1);
     let args = rawArgs.split(' ');
