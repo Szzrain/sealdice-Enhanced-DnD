@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Enhanced DnD
 // @author       Szzrain（QQ: 1970978827）
-// @version      1.1.0
+// @version      1.1.1
 // @description  一个 D&D5e 的额外功能插件，提供物品栏，商店，拓展长休等功能（目前部分完成），使用 .ext enhanced-dnd 来查看可用指令
-// @timestamp    1743661207
+// @timestamp    1743739384
 // @license      AGPL-3.0
 // @homepageURL  https://github.com/Szzrain/sealdice-Enhanced-DnD
 // @updateUrl https://github.com/Szzrain/sealdice-Enhanced-DnD/releases/download/pre-release/sealdice-enhanced-dnd.js

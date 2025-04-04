@@ -43,10 +43,10 @@ export function getPayCommand(_: ExtInfo) {
     let playerGp = seal.vars.intGet(rctx, "gp");
     let playerSp = seal.vars.intGet(rctx, "sp");
     let playerCp = seal.vars.intGet(rctx, "cp");
-    if (!playerGp[1] || !playerSp[1] || !playerCp[1]) {
-      seal.replyToSender(rctx, msg, `支付失败：你的gp,sp,或cp未录入，请先使用 .st 指令录入`);
-      return seal.ext.newCmdExecuteResult(true);
-    }
+    // if (!playerGp[1] || !playerSp[1] || !playerCp[1]) {
+    //   seal.replyToSender(rctx, msg, `支付失败：你的gp,sp,或cp未录入，请先使用 .st 指令录入`);
+    //   return seal.ext.newCmdExecuteResult(true);
+    // }
     if (amountTotal.gp === 0 && amountTotal.sp === 0 && amountTotal.cp === 0) {
       seal.replyToSender(rctx, msg, `支付失败：支付金额不能为0`);
       return seal.ext.newCmdExecuteResult(true);

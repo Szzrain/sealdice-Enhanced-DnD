@@ -87,13 +87,13 @@ export function getInventoryCommand(ext: ExtInfo) {
           return seal.ext.newCmdExecuteResult(true);
         }
         let price = itemInfo.price;
-        let playerGp = seal.vars.intGet(rctx, "gp");
-        let playerSp = seal.vars.intGet(rctx, "sp");
-        let playerCp = seal.vars.intGet(rctx, "cp");
-        if (!playerGp[1] || !playerSp[1] || !playerCp[1]) {
-          seal.replyToSender(rctx, msg, `购买物品失败：gp,sp,或cp未录入，请先使用 .st 指令录入`);
-          return seal.ext.newCmdExecuteResult(true);
-        }
+        // let playerGp = seal.vars.intGet(rctx, "gp");
+        // let playerSp = seal.vars.intGet(rctx, "sp");
+        // let playerCp = seal.vars.intGet(rctx, "cp");
+        // if (!playerGp[1] || !playerSp[1] || !playerCp[1]) {
+        //   seal.replyToSender(rctx, msg, `购买物品失败：gp,sp,或cp未录入，请先使用 .st 指令录入`);
+        //   return seal.ext.newCmdExecuteResult(true);
+        // }
         if (!playerReduceMoney(mctx, price.gp*num, price.sp*num, price.cp*num)[0]) {
           seal.replyToSender(rctx, msg, `购买物品失败：你的货币不足`);
           return seal.ext.newCmdExecuteResult(true);
