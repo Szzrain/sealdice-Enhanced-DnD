@@ -31,6 +31,7 @@ export const COMMAND_LONGREST_HELP =
   '再执行.lr st 激励=5\n';
 
 export const COMMAND_SHORTREST_HELP =
-  '短休：\n.shortrest: 进行短休' +
-  '\n.shortrest st key1=value1 key2=value2 ...: 设置短休属性（需要先设置对应属性的max值）\n' +
-  '\n.shortrest help: 查看短休帮助'
+  '短休：\n.短休: 进行短休\n' +
+  '.shortrest: 另一种写法，效果同上\n' +
+  '.shortrest st key1=value1 key2=value2 ...: 设置短休属性（需要先设置对应属性的max值）\n' +
+  '.shortrest help: 查看短休帮助'
