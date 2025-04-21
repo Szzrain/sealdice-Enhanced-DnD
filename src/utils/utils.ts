@@ -47,29 +47,28 @@ export function playerReduceMoney(ctx: seal.MsgContext, needGp: number, needSp: 
   return [true, price];
 }
 
-export function getPlayer(rctx: seal.MsgContext, msg: seal.Message, cmdArgs: seal.CmdArgs, ext: seal.ExtInfo, skipNameCheck = false) {
-  let mctx = seal.getCtxProxyFirst(rctx, cmdArgs);
-  let userId = mctx.player.userId;
-  let msgTaskArgs = [rctx.endPoint.userId, rctx.group.groupId, msg.guildId, userId, (msg.messageType === "private")];
+export function getPlayer(ctx: seal.MsgContext, msg: seal.Message, _: seal.CmdArgs, ext: seal.ExtInfo, skipNameCheck = false) {
+  let userId = ctx.player.userId;
+  let msgTaskArgs = [ctx.endPoint.userId, ctx.group.groupId, msg.guildId, userId, (msg.messageType === "private")];
   let userMap = playerMap.get(userId);
   if (!userMap) {
     userMap = new Map<string, Player>();
     playerMap.set(userId, userMap);
   }
-  let player = userMap.get(seal.vars.strGet(mctx, `$bind_inv`)[0]);
-  if (!seal.vars.strGet(mctx, `$bind_inv`)[1] || !player) {
-    player = new Player(msgTaskArgs, seal.format(mctx, `{$t玩家}`));
+  let player = userMap.get(seal.vars.strGet(ctx, `$bind_inv`)[0]);
+  if (!seal.vars.strGet(ctx, `$bind_inv`)[1] || !player) {
+    player = new Player(msgTaskArgs, seal.format(ctx, `{$t玩家}`));
     let uuid = generateUUID();
     while (userMap.has(uuid)) {
       uuid = generateUUID();
     }
-    seal.vars.strSet(mctx, `$bind_inv`, uuid);
+    seal.vars.strSet(ctx, `$bind_inv`, uuid);
     userMap.set(uuid, player);
     Save(playerMap, ext);
   } else if (!skipNameCheck) {
-    let currentname = seal.format(mctx, `{$t玩家}`);
+    let currentname = seal.format(ctx, `{$t玩家}`);
     if (player.name !== currentname) {
-      seal.replyToSender(rctx, msg, `检测到当前角色名与绑定物品栏时不符，物品栏已绑定至角色：${player.name}，当前角色名：${currentname}`);
+      seal.replyToSender(ctx, msg, `检测到当前角色名与绑定物品栏时不符，物品栏已绑定至角色：${player.name}，当前角色名：${currentname}`);
       return null;
     }
   }

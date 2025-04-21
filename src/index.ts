@@ -3,12 +3,13 @@ import {getInventoryCommand} from "./command/inventory";
 import {getShopCommand} from "./command/shop";
 import {doLongRest, getLrCommand} from "./command/lr";
 import {getPayCommand} from "./command/pay";
+import {getShortRestCommand} from "./command/shortrest";
 
 function main() {
   // 注册扩展
   let ext = seal.ext.find('enhanced-dnd');
   if (!ext) {
-    ext = seal.ext.new('enhanced-dnd', 'SzzRain', '1.1.1');
+    ext = seal.ext.new('enhanced-dnd', 'SzzRain', '1.2.0');
     seal.ext.register(ext);
   } else {
     throw new Error('enhanced-dnd 加载失败：同名扩展已存在');
@@ -22,6 +23,9 @@ function main() {
   ext.cmdMap['inv'] = ext.cmdMap['inventory'];
 
   ext.cmdMap['lr'] = getLrCommand(ext);
+
+  ext.cmdMap['shortrest'] = getShortRestCommand(ext);
+  ext.cmdMap['短休'] = ext.cmdMap['shortrest'];
 
   ext.cmdMap['pay'] = getPayCommand(ext);
 
