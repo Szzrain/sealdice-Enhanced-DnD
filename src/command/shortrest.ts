@@ -58,7 +58,26 @@ export function getShortRestCommand(ext: ExtInfo) {
         seal.replyToSender(rctx, msg, `${seal.format(mctx,"{$t玩家}")}已设置短休属性:\n${argArr.map((arg) => `${arg.key}: ${arg.value}`).join('\n')}`);
         break;
       }
+      case 'show': {
+        let text = '短休属性:\n';
+        let isEmpty = true;
+        if (player.shortRest) {
+          player.shortRest.forEach((value, key) => {
+            text += `${key}: ${value}\n`;
+            isEmpty = false;
+          });
+        }
+        if (isEmpty) {
+          text += '空空如也';
+        }
+        seal.replyToSender(rctx, msg, text);
+        break;
+      }
       default: {
+        if (arg1) {
+          seal.replyToSender(rctx, msg, `未知参数: ${arg1} 使用 .shortrest help 查看帮助`);
+          return seal.ext.newCmdExecuteResult(true);
+        }
         let shortRestCount = 0;
         let oldVal = new Map<string, number>();
         let newVal = new Map<string, number>();

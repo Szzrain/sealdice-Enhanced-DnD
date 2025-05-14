@@ -175,7 +175,7 @@ export function getLrCommand(ext: ExtInfo) {
           seal.replyToSender(rctx, msg, cmdLr.help);
           return seal.ext.newCmdExecuteResult(true);
         }
-        seal.replyToSender(rctx, msg, `未知参数: ${val}`);
+        seal.replyToSender(rctx, msg, `未知参数: ${val} 使用 .lr help 查看帮助`);
         return seal.ext.newCmdExecuteResult(true);
       }
     }
