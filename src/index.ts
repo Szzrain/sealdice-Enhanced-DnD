@@ -10,7 +10,7 @@ function main() {
   // 注册扩展
   let ext = seal.ext.find('enhanced-dnd');
   if (!ext) {
-    ext = seal.ext.new('enhanced-dnd', 'SzzRain', '1.2.1');
+    ext = seal.ext.new('enhanced-dnd', 'SzzRain', '1.2.3');
     seal.ext.register(ext);
   } else {
     throw new Error('enhanced-dnd 加载失败：同名扩展已存在');

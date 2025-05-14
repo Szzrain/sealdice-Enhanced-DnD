@@ -73,6 +73,12 @@ export function getShortRestCommand(ext: ExtInfo) {
         seal.replyToSender(rctx, msg, text);
         break;
       }
+      case 'clr': {
+        player.shortRest = new Map<string, string>();
+        Save(playerMap, ext);
+        seal.replyToSender(rctx, msg, `${seal.format(mctx, "{$t玩家}")}已清空短休属性`);
+        break;
+      }
       default: {
         if (arg1) {
           seal.replyToSender(rctx, msg, `未知参数: ${arg1} 使用 .shortrest help 查看帮助`);
